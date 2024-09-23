@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Gastos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, select {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        #relatorio {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            input, select, button {
+                font-size: 14px;
+            }
+
+            th, td {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Controle de Gastos</h1>
+        <form id="form">
+            <input type="date" id="data" required>
+            <input type="text" id="descricao" placeholder="Descrição" required>
+            <select id="tipo" required>
+                <option value="">Selecione</option>
+                <option value="Ganhos">Ganhos</option>
+                <option value="Gastos">Gastos</option>
+            </select>
+            <input type="text" id="categoria" placeholder="Categoria" required>
+            <input type="number" id="valor" placeholder="Valor" required>
+            <button type="submit">Adicionar</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Tipo</th>
+                    <th>Categoria</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody id="tabela"></tbody>
+        </table>
+        <div id="relatorio">
+            <h2>Relatório Semanal</h2>
+            <p id="totalGanhos">Total de Ganhos: R$ 0</p>
+            <p id="totalGastos">Total de Gastos: R$ 0</p>
+            <p id="saldo">Saldo: R$ 0</p>
+        </div>
+    </div>
+    <script>
+        const form = document.getElementById('form');
+        const tabela = document.getElementById('tabela');
+        const totalGanhos = document.getElementById('totalGanhos');
+        const totalGastos = document.getElementById('totalGastos');
+        const saldo = document.getElementById('saldo');
+
+        let ganhos = 0;
+        let gastos = 0;
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const data = document.getElementById('data').value;
+            const descricao = document.getElementById('descricao').value;
+            const tipo = document.getElementById('tipo').value;
+            const categoria = document.getElementById('categoria').value;
+            const valor = parseFloat(document.getElementById('valor').value);
+
+            if (tipo === 'Ganhos') {
+                ganhos += valor;
+            } else if (tipo === 'Gastos') {
+                gastos += valor;
+            }
+
+            const novaLinha = `
+                <tr>
+                    <td>${data}</td>
+                    <td>${descricao}</td>
+                    <td>${tipo}</td>
+                    <td>${categoria}</td>
+                    <td>R$ ${valor.toFixed(2)}</td>
+                </tr>
+            `;
+            
+            tabela.innerHTML += novaLinha;
+
+            atualizarRelatorio();
+            form.reset();
+        });
+
+        function atualizarRelatorio() {
+            totalGanhos.innerText = `Total de Ganhos: R$ ${ganhos.toFixed(2)}`;
+            totalGastos.innerText = `Total de Gastos: R$ ${gastos.toFixed(2)}`;
+            saldo.innerText = `Saldo: R$ ${(ganhos - gastos).toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
